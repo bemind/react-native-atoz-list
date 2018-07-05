@@ -18,13 +18,12 @@ import {
   PanResponder,
   TouchableWithoutFeedback,
   View,
-  Platform,
+  Platform
 } from 'react-native';
 
 import _ from 'lodash';
 import FixedHeightWindowedListView from './FixedHeightWindowedListView';
 import AlphabetPicker from './AlphabetPicker';
-
 
 export default class AtoZList extends Component {
   static propTypes = {
@@ -34,6 +33,8 @@ export default class AtoZList extends Component {
     renderCell: PropTypes.func,
     renderSection: PropTypes.func,
     onEndReached: PropTypes.func,
+    alphabetPickerStyle: PropTypes.object,
+    alphabetLettersStyle: PropTypes.object
   };
 
   constructor(props, context) {
@@ -43,10 +44,10 @@ export default class AtoZList extends Component {
     let cellHeight = props.cellHeight || 95;
 
     var dataSource = new FixedHeightWindowedListView.DataSource({
-      getHeightForSectionHeader: (sectionId) => {
+      getHeightForSectionHeader: sectionId => {
         return sectionHeight;
       },
-      getHeightForCell: (sectionId) => {
+      getHeightForCell: sectionId => {
         return cellHeight;
       }
     });
@@ -59,9 +60,8 @@ export default class AtoZList extends Component {
     this.dataSource = dataSource;
   }
 
-
   componentWillReceiveProps(nextProps) {
-    if(this.props.data !== nextProps.data){
+    if (this.props.data !== nextProps.data) {
       this.setState({
         dataSource: this.dataSource.cloneWithCellsAndSections(nextProps.data),
         alphabet: Object.keys(nextProps.data)
@@ -69,19 +69,23 @@ export default class AtoZList extends Component {
     }
   }
 
-
   render() {
     this._alphabetInstance = (
       <View style={styles.alphabetSidebar}>
-        <AlphabetPicker alphabet={this.state.alphabet} onTouchLetter={this._onTouchLetter.bind(this)} />
+        <AlphabetPicker
+          alphabet={this.state.alphabet}
+          onTouchLetter={this._onTouchLetter.bind(this)}
+          wrapperStyle={this.props.alphabetPickerStyle}
+          lettersStyle={this.props.alphabetLettersStyle}
+        />
       </View>
     );
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <FixedHeightWindowedListView
-            ref={view => this._listView = view}
+            ref={view => (this._listView = view)}
             dataSource={this.state.dataSource}
             renderCell={this.props.renderCell}
             renderSectionHeader={this.props.renderSection}
@@ -104,14 +108,11 @@ export default class AtoZList extends Component {
   }
 }
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 0,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   alphabetSidebar: {
     position: 'absolute',
@@ -120,7 +121,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 });
-
